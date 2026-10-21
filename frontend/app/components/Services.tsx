@@ -1,26 +1,19 @@
 
-const services = [
-  {
-    icon: "📚",
-    title: "Éveil éducatif",
-    description:
-      "Des activités adaptées à chaque âge pour apprendre en s'amusant.",
-  },
-  {
-    icon: "🥗",
-    title: "Repas équilibrés",
-    description:
-      "Des repas variés pour accompagner la croissance et le bien-être.",
-  },
-  {
-    icon: "🎨",
-    title: "Activités créatives",
-    description:
-      "Dessin, musique et jeux pour exprimer son imagination.",
-  },
-];
+import { getServices, getActivites } from "../../lib/api";
 
-export default function Services() {
+export default async function Services() {
+  let services: Service[] = [];
+  let activites: Activite[] = [];
+
+  try {
+    [services, activites] = await Promise.all([
+      getServices(),
+      getActivites(),
+    ]);
+  } catch (error) {
+    console.error("Impossible de charger les services et activités :", error);
+  }
+
   return (
     <section className="services-section" id="services">
       <div className="section-heading">
@@ -34,24 +27,36 @@ export default function Services() {
 
       <div className="services-grid">
         {services.map((service) => (
-          <article className="service-card" key={service.title}>
+          <article className="service-card" key={service.id}>
             <div className="service-icon" aria-hidden="true">
-              {service.icon}
+              {service.icone === "heart" && "💚"}
+              {service.icone === "utensils" && "🥗"}
+              {service.icone === "book-open" && "📚"}
+              {service.icone === "users" && "👨‍👩‍👧"}
             </div>
-            <h3>{service.title}</h3>
+            <h3>{service.nom}</h3>
             <p>{service.description}</p>
           </article>
         ))}
       </div>
 
       <div className="activities-banner" id="activites">
-        <span aria-hidden="true">🎵</span>
+        <span aria-hidden="true">🎨</span>
         <div>
-          <h3>Des activités chaque jour</h3>
-          <p>
-            Jeux éducatifs, éveil musical, peinture et découvertes
-            pour stimuler la curiosité des enfants.
-          </p>
+          <h3>Nos activités</h3>
+          {activites.length > 0 ? (
+            <ul>
+              {activites.map((activite) => (
+                <li key={activite.id}>
+                  <strong>{activite.nom}</strong>
+                  {" — "}
+                  {activite.description}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>Nos activités seront bientôt disponibles.</p>
+          )}
         </div>
       </div>
     </section>
