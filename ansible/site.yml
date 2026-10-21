@@ -1,0 +1,24 @@
+---
+- name: Provisionner la VM Garderie
+  hosts: all
+  become: true
+  roles:
+    - docker
+
+  post_tasks:
+    - name: Vérifier Docker
+      command: docker --version
+      register: docker_v
+      changed_when: false
+
+    - name: Vérifier Docker Compose
+      command: docker compose version
+      register: compose_v
+      changed_when: false
+
+    - name: Afficher les versions
+      debug:
+        msg:
+          - "{{ docker_v.stdout }}"
+          - "{{ compose_v.stdout }}"
+
