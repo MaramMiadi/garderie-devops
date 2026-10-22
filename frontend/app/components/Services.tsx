@@ -1,3 +1,4 @@
+import type { Service, Activite } from "../../lib/api";
 
 import { getServices, getActivites } from "../../lib/api";
 
